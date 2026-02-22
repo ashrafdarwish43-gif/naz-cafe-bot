@@ -1,5 +1,5 @@
 require("dotenv").config();
-const { Client, GatewayIntentBits, Partials, PermissionFlagsBits } = require("discord.js");
+const { Client, GatewayIntentBits, Partials, PermissionFlagsBits, EmbedBuilder } = require("discord.js");
 const mongoose = require("mongoose");
 const User = require("./models/User");
 const client = new Client({
@@ -17,7 +17,7 @@ mongoose.connect(process.env.MONGO_URI).then(() => {
   console.log("MongoDB Connected");
 });
 
-client.once("ready", () => {
+client.once("clientReady", () => {
   console.log(`Logged in as ${client.user.tag}`);
 });
 
@@ -48,8 +48,14 @@ console.log("MESSAGE =", message.content);
   if (user.xp >= neededXp) {
     user.level += 1;
     user.xp = 0;
-    message.channel.send(
-      `🎉 ${message.author}, you reached level **${user.level}**!`
+    const levelEmbed = new EmbedBuilder()
+  .setColor(0x5865F2)
+  .setTitle("🎉 Level Up!")
+  .setDescription(`${message.author} reached **Level ${user.level}**`)
+  .setThumbnail(message.author.displayAvatarURL({ dynamic: true }))
+  .setTimestamp();
+
+message.channel.send({ embeds: [levelEmbed] });
     );
   }
 
