@@ -117,7 +117,7 @@ if (command === "kick") {
   return message.channel.send(`👢 Kicked **${member.user.tag}**`);
 }
 
-// TIMEOUT
+// TIMEOUT (smart duration)
 if (command === "timeout") {
   if (!message.member.permissions.has(PermissionFlagsBits.ModerateMembers)) {
     return message.reply("❌ You lack permission to timeout.");
@@ -126,8 +126,48 @@ if (command === "timeout") {
   const member = message.mentions.members.first();
   if (!member) return message.reply("❌ Mention a user.");
 
-  await member.timeout(10 * 60 * 1000);
-  return message.channel.send(`⏳ Timed out **${member.user.tag}**`);
+  const timeArg = args[0];
+  if (!timeArg) return message.reply("❌ Provide duration (e.g. 10m, 1h, 1d).");
+
+  // ===== PARSE TIME =====
+  const timeRegex = /^(\d+)(s|m|h|d)$/;
+  const match = timeArg.match(timeRegex);
+
+  if (!match) {
+    return message.reply("❌ Invalid time format. Use 10m, 1h, 1d, etc.");
+  }
+
+  const value = parseInt(match[1]);
+  const unit = match[2];
+
+  let duration;
+
+  switch (unit) {
+    case "s":
+      duration = value * 1000;
+      break;
+    case "m":
+      duration = value * 60 * 1000;
+      break;
+    case "h":
+      duration = value * 60 * 60 * 1000;
+      break;
+    case "d":
+      duration = value * 24 * 60 * 60 * 1000;
+      break;
+  }
+
+  // Discord max timeout = 28 days
+  const max = 28 * 24 * 60 * 60 * 1000;
+  if (duration > max) {
+    return message.reply("❌ Timeout cannot exceed 28 days.");
+  }
+
+  await member.timeout(duration);
+
+  return message.channel.send(
+    `⏳ Timed out **${member.user.tag}** for **${timeArg}**`
+  );
 }
 
 // ===== END MODERATION =====
