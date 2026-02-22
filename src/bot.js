@@ -22,6 +22,7 @@ client.once("ready", () => {
 });
 
 client.on("messageCreate", async (message) => {
+  console.log("MESSAGE EVENT:", message.content);
   if (!message.guild || message.author.bot) return;
 
   const prefix = process.env.PREFIX || "!";
