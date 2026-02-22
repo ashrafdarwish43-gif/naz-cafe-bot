@@ -85,8 +85,7 @@ if (command === "rank") {
     .setUsername(message.author.username)
     .setDiscriminator(message.author.discriminator || "0000")
     .setProgressBar("#5865F2", "COLOR")
-    .setBackground("COLOR", "#0f172a");
-
+    .setBackground("IMAGE", "./assets/background.png");
   const data = await rank.build();
 
   return message.reply({
