@@ -22,7 +22,6 @@ client.once("ready", () => {
 });
 
 client.on("messageCreate", async (message) => {
-  console.log("MESSAGE EVENT:", message.content);
   if (!message.guild || message.author.bot) return;
 
   const prefix = process.env.PREFIX || "!";
@@ -56,12 +55,13 @@ client.on("messageCreate", async (message) => {
   await user.save();
   // ===== END XP =====
 
-  // ===== PREFIX COMMANDS =====
+  // ===== COMMAND CHECK =====
   if (!message.content.startsWith(prefix)) return;
 
   const args = message.content.slice(prefix.length).trim().split(/ +/);
   const command = args.shift().toLowerCase();
 
+  // ===== COMMANDS =====
   if (command === "ping") {
     return message.reply("Pong!");
   }
@@ -84,8 +84,7 @@ client.on("messageCreate", async (message) => {
       )
       .join("\n");
 
-    message.channel.send(`🏆 **Leaderboard**\n${text}`);
+    return message.channel.send(`🏆 **Leaderboard**\n${text}`);
   }
 });
-
 client.login(process.env.TOKEN);
