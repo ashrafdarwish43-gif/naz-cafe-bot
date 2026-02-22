@@ -1,5 +1,5 @@
 require("dotenv").config();
-const { Client, GatewayIntentBits, Partials } = require("discord.js");
+const { Client, GatewayIntentBits, Partials, PermissionFlagsBits } = require("discord.js");
 const mongoose = require("mongoose");
 const User = require("./models/User");
 const client = new Client({
@@ -87,5 +87,53 @@ console.log("MESSAGE =", message.content);
 
     return message.channel.send(`🏆 **Leaderboard**\n${text}`);
   }
+  // ===== MODERATION =====
+
+// BAN
+if (command === "ban") {
+  if (!message.member.permissions.has(PermissionFlagsBits.BanMembers)
+    return message.reply("❌ You lack permission to ban.");
+
+  const member = message.mentions.members.first();
+  if (!member) return message.reply("❌ Mention a user to ban.");
+
+  if (!member.bannable)
+    return message.reply("❌ I cannot ban this user.");
+
+  await member.ban({ reason: `Banned by ${message.author.tag}` });
+
+  return message.channel.send(`🔨 Banned **${member.user.tag}**`);
+}
+
+// KICK
+if (command === "kick") {
+  if (!message.member.permissions.has(PermissionFlagsBits.KickMembers)
+    return message.reply("❌ You lack permission to kick.");
+
+  const member = message.mentions.members.first();
+  if (!member) return message.reply("❌ Mention a user to kick.");
+
+  if (!member.kickable)
+    return message.reply("❌ I cannot kick this user.");
+
+  await member.kick(`Kicked by ${message.author.tag}`);
+
+  return message.channel.send(`👢 Kicked **${member.user.tag}**`);
+}
+
+// TIMEOUT (10 minutes)
+if (command === "timeout") {
+  if (!message.member.permissions.has(PermissionFlagsBits.KickMembers)
+    return message.reply("❌ You lack permission to timeout.");
+
+  const member = message.mentions.members.first();
+  if (!member) return message.reply("❌ Mention a user.");
+
+  await member.timeout(10 * 60 * 1000);
+
+  return message.channel.send(`⏳ Timed out **${member.user.tag}**`);
+}
+
+// ===== END MODERATION =====ِ
 });
 client.login(process.env.TOKEN);
