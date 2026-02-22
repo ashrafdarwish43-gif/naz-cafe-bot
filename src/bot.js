@@ -126,7 +126,7 @@ if (command === "timeout") {
   const member = message.mentions.members.first();
   if (!member) return message.reply("❌ Mention a user.");
 
-  const timeArg = args[0];
+  const timeArg = args[1];
   if (!timeArg) return message.reply("❌ Provide duration (e.g. 10m, 1h, 1d).");
 
   // ===== PARSE TIME =====
