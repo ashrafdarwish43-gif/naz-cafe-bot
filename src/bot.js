@@ -45,7 +45,7 @@ console.log("MESSAGE =", message.content);
 
   const neededXp = Math.floor(100 * Math.pow(user.level + 1, 1.5));
 
-  iif (user.xp >= neededXp) {
+  if (user.xp >= neededXp) {
   user.level += 1;
   user.xp = 0;
 
