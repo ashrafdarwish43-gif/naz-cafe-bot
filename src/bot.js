@@ -46,17 +46,18 @@ console.log("MESSAGE =", message.content);
   const neededXp = Math.floor(100 * Math.pow(user.level + 1, 1.5));
 
   if (user.xp >= neededXp) {
-    user.level += 1;
-    user.xp = 0;
-    const levelEmbed = new EmbedBuilder()
-  .setColor(0x5865F2)
-  .setTitle("🎉 Level Up!")
-  .setDescription(`${message.author} reached **Level ${user.level}**`)
-  .setThumbnail(message.author.displayAvatarURL({ dynamic: true }))
-  .setTimestamp();
+  user.level += 1;
+  user.xp = 0;
 
-message.channel.send({ embeds: [levelEmbed] });
-    );
+  const levelEmbed = new EmbedBuilder()
+    .setColor(0x5865F2)
+    .setTitle("🎉 Level Up!")
+    .setDescription(`${message.author} reached **Level ${user.level}**`)
+    .setThumbnail(message.author.displayAvatarURL({ dynamic: true }))
+    .setTimestamp();
+
+  await message.channel.send({ embeds: [levelEmbed] });
+}
   }
 
   await user.save();
