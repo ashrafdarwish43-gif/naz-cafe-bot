@@ -25,7 +25,8 @@ client.on("messageCreate", async (message) => {
   if (!message.guild || message.author.bot) return;
 
   const prefix = process.env.PREFIX || "!";
-
+console.log("PREFIX =", prefix);
+console.log("MESSAGE =", message.content);
   // ===== XP SYSTEM =====
   let user = await User.findOne({
     userId: message.author.id,
