@@ -1,5 +1,6 @@
 require("dotenv").config();
 const { Client, GatewayIntentBits, Partials, PermissionFlagsBits, EmbedBuilder } = require("discord.js");
+const { Rank } = require("canvacord");
 const mongoose = require("mongoose");
 const User = require("./models/User");
 const client = new Client({
@@ -73,12 +74,25 @@ console.log("MESSAGE =", message.content);
     return message.reply("Pong!");
   }
 
-  if (command === "rank") {
-    return message.reply(
-      `📊 Level: **${user.level}** | XP: **${user.xp}**`
-    );
-  }
+if (command === "rank") {
+  const neededXp = Math.floor(100 * Math.pow(user.level + 1, 1.5));
 
+  const rank = new Rank()
+    .setAvatar(message.author.displayAvatarURL({ forceStatic: true }))
+    .setCurrentXP(user.xp)
+    .setRequiredXP(neededXp)
+    .setLevel(user.level)
+    .setUsername(message.author.username)
+    .setDiscriminator(message.author.discriminator || "0000")
+    .setProgressBar("#5865F2", "COLOR")
+    .setBackground("COLOR", "#0f172a");
+
+  const data = await rank.build();
+
+  return message.reply({
+    files: [{ attachment: data, name: "rank.png" }]
+  });
+}
   if (command === "leaderboard") {
     const top = await User.find({ guildId: message.guild.id })
       .sort({ level: -1, xp: -1 })
