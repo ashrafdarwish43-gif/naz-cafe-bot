@@ -43,7 +43,7 @@ console.log("MESSAGE =", message.content);
   const xpGain = Math.floor(Math.random() * 10) + 5;
   user.xp += xpGain;
 
-  const neededXp = (user.level + 1) * 100;
+  const neededXp = Math.floor(100 * Math.pow(user.level + 1, 1.5));
 
   if (user.xp >= neededXp) {
     user.level += 1;
