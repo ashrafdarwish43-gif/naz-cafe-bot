@@ -191,4 +191,5 @@ if (command === "timeout") {
 
 // ===== END MODERATION =====
 });
+require("../dashboard/server");
 client.login(process.env.TOKEN);
