@@ -1,3 +1,4 @@
+require("../dashboard/server");
 require("dotenv").config();
 const { Client, GatewayIntentBits, Partials, PermissionFlagsBits, EmbedBuilder } = require("discord.js");
 const { Rank } = require("canvacord");
