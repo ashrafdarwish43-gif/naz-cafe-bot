@@ -13,6 +13,7 @@ app.get("/", (req, res) => {
   });
 });
 
+// test route
 app.get("/api/test", (req, res) => {
   res.json({
     success: true,
@@ -20,15 +21,14 @@ app.get("/api/test", (req, res) => {
   });
 });
 
-// 🚨 CRITICAL — Railway requires a port
-const PORT = process.env.PORT || 3000;
+// 🚨 CRITICAL FOR RAILWAY
+const PORT = process.env.PORT;
 
-// 🚨 CRITICAL — bind to 0.0.0.0
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`🌐 Dashboard running on port ${PORT}`);
 });
 
-// keep-alive heartbeat (optional but good)
+// ✅ keep-alive log (helps Railway detect activity)
 setInterval(() => {
-  console.log("💓 Dashboard heartbeat");
+  console.log("🫀 Dashboard heartbeat alive");
 }, 60000);
