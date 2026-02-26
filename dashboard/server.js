@@ -6,14 +6,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// health check
+// ✅ Health check (Railway watches this)
 app.get("/", (req, res) => {
-  res.json({
-    status: "NAZ Cafe dashboard online 🚀"
-  });
+  res.status(200).send("NAZ Cafe Dashboard Alive 🚀");
 });
 
-// test route
+// ✅ API test
 app.get("/api/test", (req, res) => {
   res.json({
     success: true,
@@ -21,14 +19,15 @@ app.get("/api/test", (req, res) => {
   });
 });
 
-// 🚨 CRITICAL FOR RAILWAY
-const PORT = process.env.PORT;
+// ⭐ IMPORTANT
+const PORT = process.env.PORT || 3000;
 
+// ⭐ IMPORTANT (Railway requirement)
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`🌐 Dashboard running on port ${PORT}`);
 });
 
-// ✅ keep-alive log (helps Railway detect activity)
+// ⭐ HEARTBEAT (prevents sleep detection issues)
 setInterval(() => {
-  console.log("🫀 Dashboard heartbeat alive");
-}, 60000);
+  console.log("💓 Dashboard heartbeat alive");
+}, 60_000);
