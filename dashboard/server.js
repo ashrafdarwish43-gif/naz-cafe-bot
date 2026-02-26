@@ -6,11 +6,14 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// HEALTH CHECK (VERY IMPORTANT)
+// ✅ Health check
 app.get("/", (req, res) => {
-  res.status(200).send("NAZ Cafe alive");
+  res.json({
+    status: "NAZ Cafe dashboard online 🚀"
+  });
 });
 
+// ✅ Test route
 app.get("/api/test", (req, res) => {
   res.json({
     success: true,
