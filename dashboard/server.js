@@ -33,9 +33,6 @@ app.get(
   }
 );
 
-
-});
-
 // health check
 app.get("/", (req, res) => {
   res.json({
