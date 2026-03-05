@@ -33,10 +33,7 @@ app.get(
   }
 );
 
-// simple dashboard page
-app.get("/dashboard", (req, res) => {
-  if (!req.user) return res.redirect("/auth/discord");
-  res.send(`Logged in as ${req.user.username}`);
+
 });
 
 // health check
