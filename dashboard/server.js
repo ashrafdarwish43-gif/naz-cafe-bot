@@ -10,7 +10,7 @@ app.use(express.json());
 
 app.use(
   session({
-    secret: process.env.SESSION_SECRET,
+    secret: process.env.SESSION_SECRET || "naz-secret",
     resave: false,
     saveUninitialized: false
   })
@@ -19,20 +19,12 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Discord login
+/* ---------------- LOGIN ---------------- */
+
 app.get("/auth/discord", passport.authenticate("discord"));
 
-// Discord callback
-app.get(
-  "/auth/discord/callback",
-  passport.authenticate("discord", {
-    failureRedirect: "/"
-  }),
-  (req, res) => {
-    res.redirect("/dashboard");
-  }
-);
-// 🔹 CALLBACK ROUTE (ADD IT HERE)
+/* ---------------- CALLBACK ---------------- */
+
 app.get(
   "/auth/discord/callback",
   passport.authenticate("discord", {
@@ -43,14 +35,14 @@ app.get(
   }
 );
 
+/* ---------------- DASHBOARD ---------------- */
 
-// 🔹 DASHBOARD PAGE (ADD THIS AFTER CALLBACK)
 app.get("/dashboard", (req, res) => {
-  if (!req.user) return res.redirect("/auth/discord");
+  if (!req.user) {
+    return res.redirect("/auth/discord");
+  }
 
-  const guilds = req.user.guilds;
-
-  const guildList = guilds
+  const guildList = req.user.guilds
     .map(g => `<li>${g.name}</li>`)
     .join("");
 
@@ -63,7 +55,8 @@ app.get("/dashboard", (req, res) => {
   `);
 });
 
-// health check
+/* ---------------- HEALTH CHECK ---------------- */
+
 app.get("/", (req, res) => {
   res.json({
     status: "NAZ Cafe dashboard online 🚀"
