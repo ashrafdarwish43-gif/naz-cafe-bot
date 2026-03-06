@@ -1,5 +1,5 @@
-require("../dashboard/server");
 require("dotenv").config();
+require("../dashboard/server");
 const { Client, GatewayIntentBits, Partials, PermissionFlagsBits, EmbedBuilder } = require("discord.js");
 const { Rank } = require("canvacord");
 const mongoose = require("mongoose");
