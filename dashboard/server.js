@@ -5,7 +5,10 @@ const cors = require("cors");
 const botClient = require("../src/botClient");
 
 const app = express();
+app.set("view engine", "ejs");
+app.set("views", __dirname + "/views");
 
+app.use(express.static(__dirname + "/public"));
 app.use(cors());
 app.use(express.json());
 
@@ -54,42 +57,18 @@ app.get("/dashboard", (req, res) => {
   if (!req.user) return res.redirect("/auth/discord");
 
   const client = botClient.getClient();
-
-  if (!client) {
-    return res.send("Bot not ready yet");
-  }
+  if (!client) return res.send("Bot not ready yet");
 
   const userGuilds = req.user.guilds;
   const botGuilds = client.guilds.cache;
 
   const mutualGuilds = userGuilds.filter(g => botGuilds.has(g.id));
 
-  const guildList = mutualGuilds
-    .map(g => {
-      const icon = g.icon
-        ? `https://cdn.discordapp.com/icons/${g.id}/${g.icon}.png`
-        : "https://cdn.discordapp.com/embed/avatars/0.png";
-
-      return `
-      <li style="margin:10px 0;">
-        <img src="${icon}" width="30" style="vertical-align:middle;border-radius:50%">
-        <a href="/server/${g.id}">${g.name}</a>
-      </li>
-      `;
-    })
-    .join("");
-
-  res.send(`
-    <h1>Welcome ${req.user.username}</h1>
-
-    <h2>Your Servers</h2>
-
-    <ul style="list-style:none;padding:0">
-      ${guildList}
-    </ul>
-  `);
+  res.render("dashboard", {
+    user: req.user,
+    guilds: mutualGuilds
+  });
 });
-
 /*
 ========================
 SERVER DASHBOARD
