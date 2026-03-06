@@ -2,6 +2,7 @@ const express = require("express");
 const session = require("express-session");
 const passport = require("./auth");
 const cors = require("cors");
+const botClient = require("../src/botClient");
 
 const app = express();
 
@@ -10,7 +11,7 @@ app.use(express.json());
 
 app.use(
   session({
-    secret: process.env.SESSION_SECRET || "naz-secret",
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false
   })
@@ -19,11 +20,19 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-/* ---------------- LOGIN ---------------- */
+/*
+========================
+DISCORD LOGIN
+========================
+*/
 
 app.get("/auth/discord", passport.authenticate("discord"));
 
-/* ---------------- CALLBACK ---------------- */
+/*
+========================
+DISCORD CALLBACK
+========================
+*/
 
 app.get(
   "/auth/discord/callback",
@@ -35,37 +44,100 @@ app.get(
   }
 );
 
-/* ---------------- DASHBOARD ---------------- */
+/*
+========================
+DASHBOARD
+========================
+*/
 
 app.get("/dashboard", (req, res) => {
-  if (!req.user) {
-    return res.redirect("/auth/discord");
+  if (!req.user) return res.redirect("/auth/discord");
+
+  const client = botClient.getClient();
+
+  if (!client) {
+    return res.send("Bot not ready yet");
   }
 
-  const guildList = req.user.guilds
-    .map(g => `<li>${g.name}</li>`)
+  const userGuilds = req.user.guilds;
+  const botGuilds = client.guilds.cache;
+
+  const mutualGuilds = userGuilds.filter(g => botGuilds.has(g.id));
+
+  const guildList = mutualGuilds
+    .map(g => {
+      const icon = g.icon
+        ? `https://cdn.discordapp.com/icons/${g.id}/${g.icon}.png`
+        : "https://cdn.discordapp.com/embed/avatars/0.png";
+
+      return `
+      <li style="margin:10px 0;">
+        <img src="${icon}" width="30" style="vertical-align:middle;border-radius:50%">
+        <a href="/server/${g.id}">${g.name}</a>
+      </li>
+      `;
+    })
     .join("");
 
   res.send(`
     <h1>Welcome ${req.user.username}</h1>
+
     <h2>Your Servers</h2>
-    <ul>
+
+    <ul style="list-style:none;padding:0">
       ${guildList}
     </ul>
   `);
 });
 
-/* ---------------- HEALTH CHECK ---------------- */
+/*
+========================
+SERVER DASHBOARD
+========================
+*/
+
+app.get("/server/:id", (req, res) => {
+  if (!req.user) return res.redirect("/auth/discord");
+
+  const guildId = req.params.id;
+
+  res.send(`
+    <h1>Server Dashboard</h1>
+
+    <h2>Guild ID: ${guildId}</h2>
+
+    <h3>Modules</h3>
+
+    <ul>
+      <li>Moderation</li>
+      <li>Leveling</li>
+      <li>Economy</li>
+      <li>Welcome System</li>
+      <li>Logs</li>
+    </ul>
+
+    <a href="/dashboard">⬅ Back</a>
+  `);
+});
+
+/*
+========================
+HEALTH CHECK
+========================
+*/
 
 app.get("/", (req, res) => {
   res.json({
     status: "NAZ Cafe dashboard online 🚀"
   });
 });
-console.log("Dashboard routes loaded:");
-console.log("/auth/discord");
-console.log("/auth/discord/callback");
-console.log("/dashboard");
+
+/*
+========================
+START SERVER
+========================
+*/
+
 const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, "0.0.0.0", () => {
