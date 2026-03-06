@@ -99,6 +99,15 @@ app.get("/server/:id", (req, res) => {
   `);
 });
 
+app.get("/server/:id", (req, res) => {
+  if (!req.user) return res.redirect("/auth/discord");
+
+  const guildId = req.params.id;
+
+  res.render("server", {
+    guildId
+  });
+});
 /*
 ========================
 HEALTH CHECK
