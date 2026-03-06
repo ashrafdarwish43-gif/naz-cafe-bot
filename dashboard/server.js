@@ -32,6 +32,36 @@ app.get(
     res.redirect("/dashboard");
   }
 );
+// 🔹 CALLBACK ROUTE (ADD IT HERE)
+app.get(
+  "/auth/discord/callback",
+  passport.authenticate("discord", {
+    failureRedirect: "/"
+  }),
+  (req, res) => {
+    res.redirect("/dashboard");
+  }
+);
+
+
+// 🔹 DASHBOARD PAGE (ADD THIS AFTER CALLBACK)
+app.get("/dashboard", (req, res) => {
+  if (!req.user) return res.redirect("/auth/discord");
+
+  const guilds = req.user.guilds;
+
+  const guildList = guilds
+    .map(g => `<li>${g.name}</li>`)
+    .join("");
+
+  res.send(`
+    <h1>Welcome ${req.user.username}</h1>
+    <h2>Your Servers</h2>
+    <ul>
+      ${guildList}
+    </ul>
+  `);
+});
 
 // health check
 app.get("/", (req, res) => {
