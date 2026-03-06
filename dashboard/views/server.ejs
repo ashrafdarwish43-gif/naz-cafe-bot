@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Server Dashboard</title>
+
+<style>
+
+body{
+background:#0f172a;
+color:white;
+font-family:Arial;
+padding:40px;
+}
+
+.modules{
+display:grid;
+grid-template-columns:repeat(auto-fill,200px);
+gap:20px;
+}
+
+.module{
+background:#1e293b;
+padding:20px;
+border-radius:10px;
+text-align:center;
+}
+
+.module:hover{
+background:#334155;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>Server Dashboard</h1>
+
+<h2>Guild ID: <%= guildId %></h2>
+
+<div class="modules">
+
+<div class="module">Moderation</div>
+<div class="module">Welcome System</div>
+<div class="module">Leveling</div>
+<div class="module">Economy</div>
+<div class="module">Logs</div>
+
+</div>
+
+<br>
+
+<a href="/dashboard">⬅ Back</a>
+
+</body>
+</html>
