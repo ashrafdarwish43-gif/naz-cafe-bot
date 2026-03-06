@@ -62,7 +62,10 @@ app.get("/", (req, res) => {
     status: "NAZ Cafe dashboard online 🚀"
   });
 });
-
+console.log("Dashboard routes loaded:");
+console.log("/auth/discord");
+console.log("/auth/discord/callback");
+console.log("/dashboard");
 const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, "0.0.0.0", () => {
