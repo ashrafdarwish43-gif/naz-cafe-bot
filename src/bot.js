@@ -1,5 +1,6 @@
 require("dotenv").config();
 require("../dashboard/server");
+const botClient = require("./botClient");
 const { Client, GatewayIntentBits, Partials, PermissionFlagsBits, EmbedBuilder } = require("discord.js");
 const { Rank } = require("canvacord");
 const mongoose = require("mongoose");
@@ -14,6 +15,8 @@ const client = new Client({
   ],
   partials: [Partials.Channel]
 });
+
+botClient.setClient(client);
 
 mongoose.connect(process.env.MONGO_URI).then(() => {
   console.log("MongoDB Connected");
